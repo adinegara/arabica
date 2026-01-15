@@ -1,0 +1,4 @@
+project_id = "bxkumgvpklnpjcxcnnbz"
+
+[functions.ocr-arabic]
+verify_jwt = false
