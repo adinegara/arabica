@@ -1,4 +1,4 @@
-import arabicaLogo from '@/assets/arabica-logo.png';
+import arabicaLogo from '@/assets/arabica-logo.svg';
 import { Moon, Sun, Globe } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
