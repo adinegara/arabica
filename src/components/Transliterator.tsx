@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Copy, Check, ArrowDown, Trash2, ScanLine } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Copy, Check, ArrowDown, Trash2, ScanLine, GripHorizontal } from 'lucide-react';
 import { transliterate } from '@/lib/transliterator';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -11,6 +11,7 @@ const Transliterator = () => {
   const [outputText, setOutputText] = useState('');
   const [copied, setCopied] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
   const { getConfig } = useTransliterationRules();
@@ -40,6 +41,25 @@ const Transliterator = () => {
 
   const sampleArabicText = 'اَللّٰهُمَّ اِنِّيْ اَسْأَلُكَ اَنْ تَرْزُقَنِيْ رِزْقًا حَلاَلاً وَاسِعًا طَيِّبًا';
 
+  const handleResizePointerDown = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const startY = e.clientY;
+    const startHeight = textarea.offsetHeight;
+
+    const onPointerMove = (moveEvent: PointerEvent) => {
+      const delta = moveEvent.clientY - startY;
+      textarea.style.height = `${Math.max(140, startHeight + delta)}px`;
+    };
+    const onPointerUp = () => {
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+    };
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
+  }, []);
+
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in px-0">
       {/* Input */}
@@ -66,12 +86,19 @@ const Transliterator = () => {
           </div>
         </div>
         <textarea
+          ref={textareaRef}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={t('arabicPlaceholder')}
-          className="text-area-box arabic-text"
+          className="text-area-box arabic-text rounded-b-none border-b-0"
           dir="rtl"
         />
+        <div
+          onPointerDown={handleResizePointerDown}
+          className="flex items-center justify-center gap-4 py-1.5 cursor-ns-resize border-2 border-t-0 border-border rounded-b-xl hover:bg-muted/50 transition-colors select-none touch-none"
+        >
+          <GripHorizontal className="w-5 h-5 text-muted-foreground/60" />
+        </div>
       </div>
 
       {/* Arrow indicator */}
