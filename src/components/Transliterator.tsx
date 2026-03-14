@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Copy, Check, ArrowDown, ArrowUp, Trash2, ScanLine, ArrowUpDown } from 'lucide-react';
+import { Copy, Check, ArrowDown, Trash2, ScanLine } from 'lucide-react';
 import { transliterate } from '@/lib/transliterator';
-import { reverseTransliterate } from '@/lib/reverse-transliterator';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTransliterationRules } from '@/contexts/TransliterationRulesContext';
 import ImageScanner from './ImageScanner';
 
-type Direction = 'arabic-to-latin' | 'latin-to-arabic';
-
 const Transliterator = () => {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
-  const [direction, setDirection] = useState<Direction>('arabic-to-latin');
   const [copied, setCopied] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const { toast } = useToast();
@@ -24,15 +20,10 @@ const Transliterator = () => {
       setOutputText('');
       return;
     }
-    
-    if (direction === 'arabic-to-latin') {
-      const result = transliterate(inputText, getConfig());
-      setOutputText(result);
-    } else {
-      const result = reverseTransliterate(inputText, getConfig());
-      setOutputText(result);
-    }
-  }, [inputText, getConfig, direction]);
+
+    const result = transliterate(inputText, getConfig());
+    setOutputText(result);
+  }, [inputText, getConfig]);
 
   const handleCopy = async () => {
     if (!outputText) return;
@@ -47,52 +38,27 @@ const Transliterator = () => {
     setOutputText('');
   };
 
-  const toggleDirection = () => {
-    setDirection(prev => prev === 'arabic-to-latin' ? 'latin-to-arabic' : 'arabic-to-latin');
-    setInputText('');
-    setOutputText('');
-  };
-
   const sampleArabicText = 'اَللّٰهُمَّ اِنِّيْ اَسْأَلُكَ اَنْ تَرْزُقَنِيْ رِزْقًا حَلاَلاً وَاسِعًا طَيِّبًا';
-  const sampleLatinText = 'Allâhumma innî as-aluka an tarzuqanî rizqan ḫalâlan wâsi\'an thayyiban';
 
-  const isArabicToLatin = direction === 'arabic-to-latin';
-  
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in px-0">
-      {/* Direction Toggle */}
-      <div className="flex justify-center mb-4">
-        <button
-          onClick={toggleDirection}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-border rounded-full hover:bg-muted transition-colors"
-          title={t('switchDirection')}
-        >
-          <ArrowUpDown className="w-4 h-4" />
-          {isArabicToLatin ? t('arabicToLatin') : t('latinToArabic')}
-        </button>
-      </div>
-
       {/* Input */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <label className="text-xs sm:text-sm font-medium text-muted-foreground">
-            {isArabicToLatin ? t('arabicText') : t('latinText')}
+            {t('arabicText')}
           </label>
           <div className="flex items-center gap-2">
-            {isArabicToLatin && (
-              <>
-                <button
-                  onClick={() => setShowScanner(true)}
-                  className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
-                >
-                  <ScanLine className="w-3.5 h-3.5" />
-                  {t('scanImage')}
-                </button>
-                <span className="text-muted-foreground/30">|</span>
-              </>
-            )}
             <button
-              onClick={() => setInputText(isArabicToLatin ? sampleArabicText : sampleLatinText)}
+              onClick={() => setShowScanner(true)}
+              className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+            >
+              <ScanLine className="w-3.5 h-3.5" />
+              {t('scanImage')}
+            </button>
+            <span className="text-muted-foreground/30">|</span>
+            <button
+              onClick={() => setInputText(sampleArabicText)}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               {t('trySample')}
@@ -102,9 +68,9 @@ const Transliterator = () => {
         <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder={isArabicToLatin ? t('arabicPlaceholder') : t('latinPlaceholder')}
-          className={`text-area-box ${isArabicToLatin ? 'arabic-text' : 'latin-text'}`}
-          dir={isArabicToLatin ? 'rtl' : 'ltr'}
+          placeholder={t('arabicPlaceholder')}
+          className="text-area-box arabic-text"
+          dir="rtl"
         />
       </div>
 
@@ -119,7 +85,7 @@ const Transliterator = () => {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <label className="text-xs sm:text-sm font-medium text-muted-foreground">
-            {isArabicToLatin ? t('latinTransliteration') : t('arabicResult')}
+            {t('latinTransliteration')}
           </label>
           <div className="flex gap-1 sm:gap-2">
             <button
@@ -142,13 +108,13 @@ const Transliterator = () => {
             </button>
           </div>
         </div>
-        <div 
-          className={`text-area-box bg-accent/30 min-h-[140px] sm:min-h-[180px] ${isArabicToLatin ? 'latin-text' : 'arabic-text'}`}
-          dir={isArabicToLatin ? 'ltr' : 'rtl'}
+        <div
+          className="text-area-box bg-accent/30 min-h-[140px] sm:min-h-[180px] latin-text"
+          dir="ltr"
         >
           {outputText || (
             <span className="text-muted-foreground/50 text-sm sm:text-base">
-              {isArabicToLatin ? t('transliterationPlaceholder') : t('reverseTransliterationPlaceholder')}
+              {t('transliterationPlaceholder')}
             </span>
           )}
         </div>
