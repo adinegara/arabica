@@ -24,10 +24,14 @@ export default defineConfig(({ mode }) => ({
         background_color: "#18181b",
         icons: [
           {
-            src: "/arabica-logo.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-            purpose: "any",
+            src: "/arabica-logo-192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "/arabica-logo-512.png",
+            sizes: "512x512",
+            type: "image/png",
           },
         ],
       },
