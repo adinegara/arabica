@@ -12,7 +12,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>(() => {
     const saved = localStorage.getItem('arabica-language');
-    return (saved as Language) || 'en';
+    return (saved as Language) || 'id';
   });
 
   useEffect(() => {
