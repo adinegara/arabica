@@ -24,16 +24,6 @@ export default defineConfig(({ mode }) => ({
         background_color: "#18181b",
         icons: [
           {
-            src: "/arabica-logo.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "/arabica-logo.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
             src: "/arabica-logo.svg",
             sizes: "any",
             type: "image/svg+xml",
