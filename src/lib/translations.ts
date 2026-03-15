@@ -3,6 +3,7 @@ export type Language = 'en' | 'id';
 export const translations = {
   en: {
     // Header
+    home: 'Home',
     docs: 'Docs',
     toggleTheme: 'Toggle theme',
     
@@ -117,6 +118,7 @@ export const translations = {
   },
   id: {
     // Header
+    home: 'Beranda',
     docs: 'Panduan',
     toggleTheme: 'Ganti tema',
     

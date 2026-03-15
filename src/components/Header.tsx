@@ -68,17 +68,17 @@ const Header = () => {
           </Button>
           
           <Link
+            to="/"
+            className="pill-btn text-xs"
+          >
+            {t('home')}
+          </Link>
+          <Link
             to="/pegon"
             className="pill-btn text-xs"
           >
             {t('pegon')}
           </Link>
-          <a
-            href="#docs"
-            className="pill-btn text-xs"
-          >
-            {t('docs')}
-          </a>
         </div>
       </div>
     </header>
