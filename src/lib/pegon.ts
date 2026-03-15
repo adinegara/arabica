@@ -6,7 +6,7 @@ const DIGRAPHS: Record<string, string> = {
   ny: 'پ',
   ng: 'ع',
   sy: 'ش',
-  kh: 'ح',
+  kh: 'خ',
   ts: 'ث',
   dz: 'ذ',
   sh: 'ص',
@@ -48,6 +48,15 @@ const VOWELS: Record<string, string> = {
   o: 'و',
 };
 
+// Vowels at the start of a word get an alif prefix (Awal Kata column in XLS)
+const VOWELS_WORD_START: Record<string, string> = {
+  a: 'ا',
+  i: 'إي',  // alif hamza below + ya
+  u: 'او',  // alif + waw
+  e: 'اي',  // alif + ya
+  o: 'او',  // alif + waw
+};
+
 // Sorted digraphs by length descending for longest-match-first
 const SORTED_DIGRAPHS = Object.keys(DIGRAPHS).sort((a, b) => b.length - a.length);
 
@@ -71,7 +80,8 @@ function convertWord(word: string): string {
     if (!matched) {
       const ch = word[i];
       if (VOWELS[ch]) {
-        result += VOWELS[ch];
+        // Use word-start form if this vowel is at the beginning of the word
+        result += (i === 0 ? VOWELS_WORD_START[ch] : VOWELS[ch]);
       } else if (CONSONANTS[ch]) {
         result += CONSONANTS[ch];
       } else {
