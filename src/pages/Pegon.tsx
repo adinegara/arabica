@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import PegonConverter from '@/components/PegonConverter';
+import PegonBakuSection from '@/components/PegonBakuSection';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Pegon = () => {
@@ -21,6 +22,8 @@ const Pegon = () => {
         </div>
 
         <PegonConverter />
+
+        <PegonBakuSection />
 
         {/* Footer */}
         <footer className="mt-12 sm:mt-16 text-center text-xs text-muted-foreground space-y-2">

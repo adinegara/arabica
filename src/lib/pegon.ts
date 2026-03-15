@@ -114,11 +114,18 @@ function convertWord(word: string): string {
   return result;
 }
 
-export function toPegon(latinText: string): string {
+export function toPegon(latinText: string, bakuMap?: Record<string, string>): string {
   const lower = latinText.toLowerCase();
   // Split by spaces while preserving whitespace
   return lower
     .split(/(\s+)/)
-    .map((segment) => (/\s+/.test(segment) ? segment : convertWord(segment)))
+    .map((segment) => {
+      if (/\s+/.test(segment)) return segment;
+      // Check pegon baku (Arabic loanwords) first
+      // Strip diacritics for lookup (é→e, ĕ→e)
+      const plain = segment.replace(/[éĕ]/g, 'e');
+      if (bakuMap && bakuMap[plain]) return bakuMap[plain];
+      return convertWord(segment);
+    })
     .join('');
 }

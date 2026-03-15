@@ -125,6 +125,22 @@ export const translations = {
     trySamplePegon: 'Try sample',
     scanLatinText: 'Scan Text',
     detectingPepet: 'Detecting e pepet...',
+
+    // Pegon Baku
+    bakuTitle: 'Pegon Baku (Arabic Loanwords)',
+    bakuDescription: 'Words borrowed from Arabic keep their original Arabic spelling in Pegon.',
+    bakuWordList: 'Word List',
+    bakuEmpty: 'No words yet.',
+    bakuSubmitTitle: 'Suggest a new word',
+    bakuLatinPlaceholder: 'Latin word',
+    bakuArabicPlaceholder: 'Arabic spelling',
+    bakuNamePlaceholder: 'Your name (optional)',
+    bakuSubmit: 'Submit',
+    bakuSubmitting: 'Submitting...',
+    bakuSubmitSuccess: 'Submitted!',
+    bakuSubmitSuccessDesc: 'Your suggestion will be reviewed shortly.',
+    bakuSubmitError: 'Submit Failed',
+    bakuSubmitErrorDesc: 'Failed to submit. Please try again.',
   },
   id: {
     // Header
@@ -250,6 +266,22 @@ export const translations = {
     trySamplePegon: 'Coba contoh',
     scanLatinText: 'Pindai Teks',
     detectingPepet: 'Mendeteksi e pepet...',
+
+    // Pegon Baku
+    bakuTitle: 'Pegon Baku (Kata Serapan Arab)',
+    bakuDescription: 'Kata serapan dari bahasa Arab tetap menggunakan ejaan asli Arab dalam Pegon.',
+    bakuWordList: 'Daftar Kata',
+    bakuEmpty: 'Belum ada kata.',
+    bakuSubmitTitle: 'Usulkan kata baru',
+    bakuLatinPlaceholder: 'Kata Latin',
+    bakuArabicPlaceholder: 'Ejaan Arab',
+    bakuNamePlaceholder: 'Nama Anda (opsional)',
+    bakuSubmit: 'Kirim',
+    bakuSubmitting: 'Mengirim...',
+    bakuSubmitSuccess: 'Terkirim!',
+    bakuSubmitSuccessDesc: 'Usulan Anda akan ditinjau segera.',
+    bakuSubmitError: 'Gagal Mengirim',
+    bakuSubmitErrorDesc: 'Gagal mengirim. Silakan coba lagi.',
   },
 } as const;
 

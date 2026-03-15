@@ -3,6 +3,7 @@ import { Copy, Check, ArrowDown, Trash2, ScanLine, GripHorizontal, Loader2 } fro
 import { toPegon } from '@/lib/pegon';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { usePegonBaku } from '@/hooks/usePegonBaku';
 import { supabase } from '@/integrations/supabase/client';
 import ImageScanner from './ImageScanner';
 
@@ -16,6 +17,7 @@ const PegonConverter = () => {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { words: bakuWords } = usePegonBaku();
 
   useEffect(() => {
     if (!inputText.trim()) {
@@ -26,7 +28,7 @@ const PegonConverter = () => {
     }
 
     // Instant conversion first (treats all 'e' as taling)
-    setOutputText(toPegon(inputText));
+    setOutputText(toPegon(inputText, bakuWords));
 
     // If text contains 'e', call AI to detect pepet/taling
     if (/e/i.test(inputText)) {
@@ -38,7 +40,7 @@ const PegonConverter = () => {
             body: { text: inputText },
           });
           if (!error && data?.text) {
-            setOutputText(toPegon(data.text));
+            setOutputText(toPegon(data.text, bakuWords));
           }
         } catch {
           // Fallback: keep the instant result
@@ -51,7 +53,7 @@ const PegonConverter = () => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [inputText]);
+  }, [inputText, bakuWords]);
 
   const handleCopy = async () => {
     if (!outputText) return;
