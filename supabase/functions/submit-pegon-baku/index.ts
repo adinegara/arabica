@@ -25,7 +25,7 @@ serve(async (req) => {
         latin: latin.toLowerCase().trim(),
         arabic: arabic.trim(),
         status: "pending",
-        submitted_by: submitted_by || "anonymous",
+        submitted_by: submitted_by || "",
       })
       .select()
       .single();
@@ -66,7 +66,7 @@ serve(async (req) => {
                 </tr>
                 <tr>
                   <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Submitted by</td>
-                  <td style="padding: 8px; border: 1px solid #ddd;">${submitted_by || "anonymous"}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd;">${submitted_by || ""}</td>
                 </tr>
               </table>
               <div style="margin-top: 20px; text-align: center;">

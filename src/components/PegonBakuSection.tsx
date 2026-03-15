@@ -22,7 +22,7 @@ const PegonBakuSection = () => {
     setSubmitting(true);
     try {
       const { error } = await supabase.functions.invoke('submit-pegon-baku', {
-        body: { latin: latin.trim(), arabic: arabic.trim(), submitted_by: submittedBy.trim() || 'anonymous' },
+        body: { latin: latin.trim(), arabic: arabic.trim(), submitted_by: submittedBy.trim() },
       });
 
       if (error) throw error;
