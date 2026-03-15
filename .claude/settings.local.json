@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(rsvg-convert:*)"
+      "Bash(rsvg-convert:*)",
+      "Bash(npm list:*)",
+      "Bash(npm:*)"
     ]
   }
 }

@@ -1,5 +1,7 @@
-import { useState, useRef } from 'react';
-import { Camera, Upload, X, Loader2 } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { Camera, Upload, X, Loader2, Check, RotateCcw } from 'lucide-react';
+import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,46 +11,77 @@ interface ImageScannerProps {
   onClose: () => void;
 }
 
+function getCroppedImage(image: HTMLImageElement, crop: PixelCrop): string {
+  const canvas = document.createElement('canvas');
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+  canvas.width = crop.width * scaleX;
+  canvas.height = crop.height * scaleY;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(
+    image,
+    crop.x * scaleX, crop.y * scaleY,
+    crop.width * scaleX, crop.height * scaleY,
+    0, 0,
+    canvas.width, canvas.height,
+  );
+  return canvas.toDataURL('image/jpeg', 0.9);
+}
+
 const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const imgRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
   const { toast } = useToast();
 
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
+  const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget;
+    const cropWidth = width * 0.8;
+    const cropHeight = height * 0.8;
+    setCrop({
+      unit: 'px',
+      x: (width - cropWidth) / 2,
+      y: (height - cropHeight) / 2,
+      width: cropWidth,
+      height: cropHeight,
+    });
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        const result = reader.result as string;
-        resolve(result);
+        setImageSrc(reader.result as string);
+        setCrop(undefined);
+        setCompletedCrop(undefined);
       };
-      reader.onerror = reject;
       reader.readAsDataURL(file);
-    });
+    }
+    e.target.value = '';
   };
 
-  const processImage = async (file: File) => {
+  const handleCropConfirm = async () => {
+    if (!imgRef.current || !completedCrop) return;
     setIsProcessing(true);
 
-    // Create preview
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-
     try {
-      // Convert file to base64
-      const base64Image = await fileToBase64(file);
+      const croppedBase64 = getCroppedImage(imgRef.current, completedCrop);
+      setPreviewUrl(croppedBase64);
 
-      // Call edge function for OCR
       const { data, error } = await supabase.functions.invoke('ocr-arabic', {
-        body: { image: base64Image },
+        body: { image: croppedBase64 },
       });
 
       if (error) {
         console.error('OCR Error:', error);
-        
-        // Handle specific error codes
+
         if (error.message?.includes('429')) {
           toast({
             title: t('scanError'),
@@ -96,22 +129,19 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
       });
     } finally {
       setIsProcessing(false);
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processImage(file);
-    }
+  const handleReselect = () => {
+    setImageSrc(null);
+    setCrop(undefined);
+    setCompletedCrop(undefined);
+    setPreviewUrl(null);
   };
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-card border border-border rounded-2xl shadow-xl max-w-md w-full p-6 animate-fade-in">
+      <div className="bg-card border border-border rounded-2xl shadow-xl max-w-md w-full p-6 animate-fade-in max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">{t('scanImage')}</h3>
@@ -137,6 +167,45 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
             <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-primary" />
             <p className="text-sm text-muted-foreground mb-2">{t('scanProcessing')}</p>
             <p className="text-xs text-muted-foreground">Analyzing with AI Vision...</p>
+          </div>
+        ) : imageSrc ? (
+          /* Cropping State */
+          <div>
+            <div className="flex justify-center mb-4 rounded-xl bg-black">
+              <ReactCrop
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={(c) => setCompletedCrop(c)}
+              >
+                <img
+                  ref={imgRef}
+                  src={imageSrc}
+                  alt="Crop"
+                  onLoad={onImageLoad}
+                  className="max-w-full object-contain"
+                />
+              </ReactCrop>
+            </div>
+            <p className="text-xs text-muted-foreground text-center mb-4">
+              Drag edges or corners to adjust crop area
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleReselect}
+                className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-border hover:bg-muted/50 transition-all"
+              >
+                <RotateCcw className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Reselect</span>
+              </button>
+              <button
+                onClick={handleCropConfirm}
+                disabled={!completedCrop}
+                className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all disabled:opacity-50"
+              >
+                <Check className="w-4 h-4" />
+                <span className="text-sm font-medium">Scan</span>
+              </button>
+            </div>
           </div>
         ) : (
           /* Selection State */
