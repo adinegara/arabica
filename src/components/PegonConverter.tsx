@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Copy, Check, ArrowDown, Trash2, ScanLine, GripHorizontal } from 'lucide-react';
+import { Copy, Check, ArrowDown, Trash2, ScanLine, GripHorizontal, Loader2 } from 'lucide-react';
 import { toPegon } from '@/lib/pegon';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 import ImageScanner from './ImageScanner';
 
 const PegonConverter = () => {
@@ -10,17 +11,46 @@ const PegonConverter = () => {
   const [outputText, setOutputText] = useState('');
   const [copied, setCopied] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const { toast } = useToast();
   const { t } = useLanguage();
 
   useEffect(() => {
     if (!inputText.trim()) {
       setOutputText('');
+      setIsDetecting(false);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       return;
     }
 
+    // Instant conversion first (treats all 'e' as taling)
     setOutputText(toPegon(inputText));
+
+    // If text contains 'e', call AI to detect pepet/taling
+    if (/e/i.test(inputText)) {
+      setIsDetecting(true);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke('detect-pepet', {
+            body: { text: inputText },
+          });
+          if (!error && data?.text) {
+            setOutputText(toPegon(data.text));
+          }
+        } catch {
+          // Fallback: keep the instant result
+        } finally {
+          setIsDetecting(false);
+        }
+      }, 600);
+    }
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [inputText]);
 
   const handleCopy = async () => {
@@ -108,8 +138,14 @@ const PegonConverter = () => {
       {/* Output */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <label className="text-xs sm:text-sm font-medium text-muted-foreground">
+          <label className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center gap-2">
             {t('pegonOutput')}
+            {isDetecting && (
+              <span className="flex items-center gap-1 text-xs text-primary">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                {t('detectingPepet')}
+              </span>
+            )}
           </label>
           <div className="flex gap-1 sm:gap-2">
             <button

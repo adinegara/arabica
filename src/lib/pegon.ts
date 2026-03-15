@@ -44,7 +44,9 @@ const VOWELS: Record<string, string> = {
   a: 'ا',
   i: 'ي',
   u: 'و',
-  e: 'ي',
+  e: 'ي',   // e taling (default)
+  é: 'ي',   // e taling (AI-marked)
+  ĕ: '',    // e pepet — no ي output
   o: 'و',
 };
 
@@ -53,7 +55,9 @@ const VOWELS_WORD_START: Record<string, string> = {
   a: 'ا',
   i: 'إي',  // alif hamza below + ya
   u: 'او',  // alif + waw
-  e: 'اي',  // alif + ya
+  e: 'اي',  // e taling (default)
+  é: 'اي',  // e taling (AI-marked)
+  ĕ: 'ا',   // e pepet — just alif, no ya
   o: 'او',  // alif + waw
 };
 
@@ -92,7 +96,7 @@ function convertWord(word: string): string {
 
     if (!matched) {
       const ch = word[i];
-      if (VOWELS[ch]) {
+      if (ch in VOWELS) {
         // Use word-start form if this vowel is at the beginning of the word
         result += (i === 0 ? VOWELS_WORD_START[ch] : VOWELS[ch]);
       } else if (CONSONANTS[ch]) {

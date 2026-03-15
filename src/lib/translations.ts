@@ -123,6 +123,7 @@ export const translations = {
     pegonOutputPlaceholder: 'Pegon script will appear here...',
     trySamplePegon: 'Try sample',
     scanLatinText: 'Scan Text',
+    detectingPepet: 'Detecting e pepet...',
   },
   id: {
     // Header
@@ -246,6 +247,7 @@ export const translations = {
     pegonOutputPlaceholder: 'Aksara Pegon akan muncul di sini...',
     trySamplePegon: 'Coba contoh',
     scanLatinText: 'Pindai Teks',
+    detectingPepet: 'Mendeteksi e pepet...',
   },
 } as const;
 
