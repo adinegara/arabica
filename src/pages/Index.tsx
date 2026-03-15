@@ -28,8 +28,14 @@ const Index = () => {
         </div>
 
         {/* Footer */}
-        <footer className="mt-12 sm:mt-16 text-center text-xs text-muted-foreground">
+        <footer className="mt-12 sm:mt-16 text-center text-xs text-muted-foreground space-y-2">
           <p>{t('footer')}</p>
+          <p>
+            {t('createdBy')}{' '}
+            <a href="https://instagram.com/netizenz" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors">
+              @netizenz
+            </a>
+          </p>
         </footer>
       </main>
     </div>

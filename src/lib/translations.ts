@@ -113,7 +113,8 @@ export const translations = {
     scanLatinNoTextDesc: 'Could not detect Latin text in the image. Try a clearer image.',
     
     // Footer
-    footer: 'Arabica — Convert with ease ☕',
+    footer: 'Arabica — Convert with ease',
+    createdBy: 'Created and crafted by',
 
     // Pegon
     pegon: 'Pegon',
@@ -237,7 +238,8 @@ export const translations = {
     scanLatinNoTextDesc: 'Tidak dapat mendeteksi teks Latin pada gambar. Coba gambar yang lebih jelas.',
     
     // Footer
-    footer: 'Arabica — Konversi dengan mudah ☕',
+    footer: 'Arabica — Konversi dengan mudah',
+    createdBy: 'Dibuat dan dirancang oleh',
 
     // Pegon
     pegon: 'Pegon',
