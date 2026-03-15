@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 interface ImageScannerProps {
   onTextDetected: (text: string) => void;
   onClose: () => void;
+  ocrFunction?: string;
+  variant?: 'arabic' | 'latin';
 }
 
 function getCroppedImage(image: HTMLImageElement, crop: PixelCrop): string {
@@ -28,7 +30,7 @@ function getCroppedImage(image: HTMLImageElement, crop: PixelCrop): string {
   return canvas.toDataURL('image/jpeg', 0.9);
 }
 
-const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
+const ImageScanner = ({ onTextDetected, onClose, ocrFunction = 'ocr-arabic', variant = 'arabic' }: ImageScannerProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -75,7 +77,7 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
       const croppedBase64 = getCroppedImage(imgRef.current, completedCrop);
       setPreviewUrl(croppedBase64);
 
-      const { data, error } = await supabase.functions.invoke('ocr-arabic', {
+      const { data, error } = await supabase.functions.invoke(ocrFunction, {
         body: { image: croppedBase64 },
       });
 
@@ -110,13 +112,13 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
         onTextDetected(extractedText);
         toast({
           title: t('scanSuccess'),
-          description: t('scanSuccessDesc'),
+          description: t(variant === 'latin' ? 'scanLatinSuccessDesc' : 'scanSuccessDesc'),
         });
         onClose();
       } else {
         toast({
           title: t('scanNoText'),
-          description: t('scanNoTextDesc'),
+          description: t(variant === 'latin' ? 'scanLatinNoTextDesc' : 'scanNoTextDesc'),
           variant: 'destructive',
         });
       }
@@ -144,7 +146,7 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
       <div className="bg-card border border-border rounded-2xl shadow-xl max-w-md w-full p-6 animate-fade-in max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold">{t('scanImage')}</h3>
+          <h3 className="text-lg font-semibold">{t(variant === 'latin' ? 'scanLatinImage' : 'scanImage')}</h3>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-muted transition-colors"
@@ -165,7 +167,7 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
               />
             )}
             <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-primary" />
-            <p className="text-sm text-muted-foreground mb-2">{t('scanProcessing')}</p>
+            <p className="text-sm text-muted-foreground mb-2">{t(variant === 'latin' ? 'scanLatinProcessing' : 'scanProcessing')}</p>
             <p className="text-xs text-muted-foreground">Analyzing with AI Vision...</p>
           </div>
         ) : imageSrc ? (
@@ -211,7 +213,7 @@ const ImageScanner = ({ onTextDetected, onClose }: ImageScannerProps) => {
           /* Selection State */
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground text-center mb-6">
-              {t('scanDescription')}
+              {t(variant === 'latin' ? 'scanLatinDescription' : 'scanDescription')}
             </p>
 
             {/* Upload Button */}

@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Copy, Check, ArrowDown, Trash2, GripHorizontal } from 'lucide-react';
+import { Copy, Check, ArrowDown, Trash2, ScanLine, GripHorizontal } from 'lucide-react';
 import { toPegon } from '@/lib/pegon';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import ImageScanner from './ImageScanner';
 
 const PegonConverter = () => {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -63,12 +65,22 @@ const PegonConverter = () => {
           <label className="text-xs sm:text-sm font-medium text-muted-foreground">
             {t('latinText')}
           </label>
-          <button
-            onClick={() => setInputText(sampleText)}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t('trySamplePegon')}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowScanner(true)}
+              className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+            >
+              <ScanLine className="w-3.5 h-3.5" />
+              {t('scanLatinText')}
+            </button>
+            <span className="text-muted-foreground/30">|</span>
+            <button
+              onClick={() => setInputText(sampleText)}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('trySamplePegon')}
+            </button>
+          </div>
         </div>
         <textarea
           ref={textareaRef}
@@ -131,6 +143,16 @@ const PegonConverter = () => {
           )}
         </div>
       </div>
+
+      {/* Image Scanner Modal */}
+      {showScanner && (
+        <ImageScanner
+          onTextDetected={(text) => setInputText(text)}
+          onClose={() => setShowScanner(false)}
+          ocrFunction="ocr-latin"
+          variant="latin"
+        />
+      )}
     </div>
   );
 };

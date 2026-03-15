@@ -104,6 +104,13 @@ export const translations = {
     scanError: 'Scan Failed',
     scanErrorDesc: 'An error occurred while processing the image.',
     scanTip: 'Tip: Use clear, well-lit images for best results',
+
+    // Scan Latin (Pegon)
+    scanLatinImage: 'Scan Latin Text',
+    scanLatinDescription: 'Upload an image or take a photo of Indonesian/Latin text to extract and convert it to Pegon.',
+    scanLatinProcessing: 'Detecting Latin text...',
+    scanLatinSuccessDesc: 'Latin text has been extracted from the image.',
+    scanLatinNoTextDesc: 'Could not detect Latin text in the image. Try a clearer image.',
     
     // Footer
     footer: 'Arabica — Convert with ease ☕',
@@ -115,6 +122,7 @@ export const translations = {
     pegonPlaceholder: 'Type Indonesian text here',
     pegonOutputPlaceholder: 'Pegon script will appear here...',
     trySamplePegon: 'Try sample',
+    scanLatinText: 'Scan Text',
   },
   id: {
     // Header
@@ -219,6 +227,13 @@ export const translations = {
     scanError: 'Pemindaian Gagal',
     scanErrorDesc: 'Terjadi kesalahan saat memproses gambar.',
     scanTip: 'Tips: Gunakan gambar yang jelas dan terang untuk hasil terbaik',
+
+    // Scan Latin (Pegon)
+    scanLatinImage: 'Pindai Teks Latin',
+    scanLatinDescription: 'Unggah gambar atau ambil foto teks Indonesia/Latin untuk mengekstrak dan mengonversinya ke Pegon.',
+    scanLatinProcessing: 'Mendeteksi teks Latin...',
+    scanLatinSuccessDesc: 'Teks Latin telah diekstrak dari gambar.',
+    scanLatinNoTextDesc: 'Tidak dapat mendeteksi teks Latin pada gambar. Coba gambar yang lebih jelas.',
     
     // Footer
     footer: 'Arabica — Konversi dengan mudah ☕',
@@ -230,6 +245,7 @@ export const translations = {
     pegonPlaceholder: 'Ketik teks Indonesia di sini',
     pegonOutputPlaceholder: 'Aksara Pegon akan muncul di sini...',
     trySamplePegon: 'Coba contoh',
+    scanLatinText: 'Pindai Teks',
   },
 } as const;
 
