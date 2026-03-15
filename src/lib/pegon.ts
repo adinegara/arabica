@@ -57,6 +57,19 @@ const VOWELS_WORD_START: Record<string, string> = {
   o: 'او',  // alif + waw
 };
 
+const NUMBERS: Record<string, string> = {
+  '0': '٠',
+  '1': '١',
+  '2': '٢',
+  '3': '٣',
+  '4': '٤',
+  '5': '٥',
+  '6': '٦',
+  '7': '٧',
+  '8': '٨',
+  '9': '٩',
+};
+
 // Sorted digraphs by length descending for longest-match-first
 const SORTED_DIGRAPHS = Object.keys(DIGRAPHS).sort((a, b) => b.length - a.length);
 
@@ -84,8 +97,10 @@ function convertWord(word: string): string {
         result += (i === 0 ? VOWELS_WORD_START[ch] : VOWELS[ch]);
       } else if (CONSONANTS[ch]) {
         result += CONSONANTS[ch];
+      } else if (NUMBERS[ch]) {
+        result += NUMBERS[ch];
       } else {
-        // Keep unrecognized characters as-is (punctuation, numbers, etc.)
+        // Keep unrecognized characters as-is (punctuation, etc.)
         result += ch;
       }
       i++;
