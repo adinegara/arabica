@@ -106,6 +106,14 @@ export const translations = {
     
     // Footer
     footer: 'Arabica — Convert with ease ☕',
+
+    // Pegon
+    pegon: 'Pegon',
+    pegonTagline: 'Latin Indonesian to Arabic Pegon script.',
+    pegonOutput: 'Pegon Output',
+    pegonPlaceholder: 'Type Indonesian text here',
+    pegonOutputPlaceholder: 'Pegon script will appear here...',
+    trySamplePegon: 'Try sample',
   },
   id: {
     // Header
@@ -212,6 +220,14 @@ export const translations = {
     
     // Footer
     footer: 'Arabica — Konversi dengan mudah ☕',
+
+    // Pegon
+    pegon: 'Pegon',
+    pegonTagline: 'Konversi huruf Latin Indonesia ke aksara Arab Pegon.',
+    pegonOutput: 'Hasil Pegon',
+    pegonPlaceholder: 'Ketik teks Indonesia di sini',
+    pegonOutputPlaceholder: 'Aksara Pegon akan muncul di sini...',
+    trySamplePegon: 'Coba contoh',
   },
 } as const;
 

@@ -3,7 +3,14 @@
     "allow": [
       "Bash(rsvg-convert:*)",
       "Bash(npm list:*)",
-      "Bash(npm:*)"
+      "Bash(npm:*)",
+      "Bash(grep:*)",
+      "Bash(python3:*)",
+      "Bash(ssconvert:*)",
+      "Bash(libreoffice:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(node:*)"
     ]
   }
 }

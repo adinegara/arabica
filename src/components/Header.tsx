@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import arabicaLogo from '@/assets/arabica-logo.svg';
 import { Moon, Sun, Globe } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -66,8 +67,14 @@ const Header = () => {
             <span className="sr-only">{t('toggleTheme')}</span>
           </Button>
           
-          <a 
-            href="#docs" 
+          <Link
+            to="/pegon"
+            className="pill-btn text-xs"
+          >
+            {t('pegon')}
+          </Link>
+          <a
+            href="#docs"
             className="pill-btn text-xs"
           >
             {t('docs')}
